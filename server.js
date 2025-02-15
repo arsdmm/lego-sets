@@ -1,3 +1,16 @@
+/********************************************************************************
+* WEB700 – Assignment 03
+*
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Dmytro Litvinov Student ID: 132258237 Date: 1/31/2025
+*
+* Published URL: ___________________________________________________________
+*
+********************************************************************************/
 const express = require("express");
 const LegoData = require("./modules/legoSets");
 const path = require("path");
