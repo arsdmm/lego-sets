@@ -68,7 +68,32 @@ class LegoData {
             }
         });
     }
+    
 }
+
+class LegoData {
+    constructor() {
+      this.sets = [];
+    }
+  
+
+    addSet(newSet) {
+      return new Promise((resolve, reject) => {
+
+        const exists = this.sets.some(set => set.set_num === newSet.set_num);
+        
+        if (exists) {
+          reject("Set already exists");
+        } else {
+          this.sets.push(newSet);
+          resolve();
+        }
+      });
+    }
+  }
+  
+module.exports = new LegoData();
+  
 
 module.exports = LegoData;
 

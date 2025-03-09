@@ -61,3 +61,34 @@ legoData.initialize()
     .catch(err => {
         console.error("Failed to initialize Lego data:", err);
     });
+
+    app.use(express.json());
+
+    app.get('/lego/add-test', (req, res) => {
+
+      let testSet = {
+        set_num: "123",
+        name: "testSet name",
+        year: "2024",
+        theme_id: "366",
+        num_parts: "123",
+        img_url: "https://fakeimg.pl/375x375?text=[+Lego+]"
+      };
+    
+
+      legoData.addSet(testSet)
+        .then(() => {
+          res.redirect('/lego/sets'); 
+        })
+        .catch((err) => {
+          res.status(422).send(err); 
+        });
+    });
+    
+    app.get('/lego/sets', (req, res) => {
+      res.json(legoData.sets);
+    });
+    
+    app.listen(8080, () => {
+      console.log('Server running on http://localhost:8080');
+    });
