@@ -71,7 +71,7 @@ class LegoData {
     
 }
 
-class LegoData {
+class LegoData1 {
     constructor() {
       this.sets = [];
     }
