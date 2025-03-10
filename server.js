@@ -19,7 +19,9 @@ const app = express();
 const HTTP_PORT = process.env.PORT || 3000;
 const legoData = new LegoData();
 
-app.use(express.static("public"));
+// app.use(express.static("public"));
+app.use(express.static(__dirname + '/public'));
+
 
 legoData.initialize()
     .then(() => {
