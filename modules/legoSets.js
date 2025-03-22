@@ -1,21 +1,10 @@
-/********************************************************************************
- * WEB700 – Assignment 02
- *
- * I declare that this assignment is my own work in accordance with Seneca's
- * Academic Integrity Policy:
- *
- * https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
- *
- * Name: Dmytro Litvinov Student ID: 132258237 Date: 1/31/2025
- *
- ********************************************************************************/
-
 const setData = require("../data/setData");
 const themeData = require("../data/themeData");
 
 class LegoData {
     constructor() {
         this.sets = [];
+        this.themes = [];
     }
 
     initialize() {
@@ -29,6 +18,7 @@ class LegoData {
                     set.theme = theme.name;
                 }
             });
+            this.themes = themeData; 
             if (this.sets.length > 0) {
                 resolve("Data downloaded");
             } else {
@@ -68,52 +58,58 @@ class LegoData {
             }
         });
     }
-    
-}
 
-class LegoData1 {
-    constructor() {
-      this.sets = [];
+    getAllThemes() {
+        return new Promise((resolve) => {
+            resolve(this.themes);
+        });
     }
-  
 
     addSet(newSet) {
-      return new Promise((resolve, reject) => {
-
-        const exists = this.sets.some(set => set.set_num === newSet.set_num);
-        
-        if (exists) {
-          reject("Set already exists");
-        } else {
-          this.sets.push(newSet);
-          resolve();
-        }
-      });
+        return new Promise((resolve, reject) => {
+            console.log(newSet)
+            const exists = this.sets.some(set => set.set_num === newSet.set_num);
+            if (exists) {
+                reject("Set already exists");
+            } else {
+                const theme = this.themes.find(t => t.id === newSet.theme_id);
+                if (theme) {
+                    newSet.theme = theme.name;
+                }
+                this.sets.push(newSet);
+                resolve("Set added successfully");
+            }
+        });
     }
-  }
-  
-module.exports = new LegoData();
-  
+
+    deleteSetByNum(setNum) {
+        return new Promise((resolve, reject) => {
+          const index = this.sets.findIndex(set => set.set_num === setNum);
+          if (index !== -1) {
+            this.sets.splice(index, 1); 
+            resolve();
+          } else {
+            reject("Set not found");
+          }
+        });
+      }
+    
+      getThemeById(themeId) {
+        return new Promise((resolve, reject) => {
+            console.log("Searching for theme ID:", themeId);
+            const theme = this.themes.find(t => t.id === themeId);
+            if (theme) {
+                console.log("Theme found:", theme);
+                resolve(theme);
+            } else {
+                const errorMessage = `Theme not found for ID: ${themeId}`;
+                console.error(errorMessage); 
+                reject(new Error(errorMessage)); 
+            }
+        });
+    }
+     
+      
+}
 
 module.exports = LegoData;
-
-// Testing the LegoData class
-let data = new LegoData();
-data.initialize()
-    .then(() => {
-        return data.getAllSets(); 
-    })
-    .then(sets => {
-        console.log(`Number of Sets: ${sets.length}`);
-        return data.getSetByNum("001-1");
-    })
-    .then(set => {
-        console.log(set);
-        return data.getSetsByTheme('tech');
-    })
-    .then(techSets => {
-        console.log(`Number of 'tech' sets: ${techSets.length}`);
-    })
-    .catch(error => {
-        console.error(error);
-    });

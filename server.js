@@ -19,42 +19,83 @@ const app = express();
 const HTTP_PORT = process.env.PORT || 3000;
 const legoData = new LegoData();
 
-// app.use(express.static("public"));
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 legoData.initialize()
     .then(() => {
+
         app.get("/", (req, res) => {
-            res.sendFile(path.join(__dirname, "views", "home.html"));
+            res.render(path.join(__dirname, "views", "home.ejs"));
         });
 
         app.get("/about", (req, res) => {
-            res.sendFile(path.join(__dirname, "views", "about.html"));
+            res.render(path.join(__dirname, "views", "about.ejs"));
         });
 
         app.get("/lego/sets", (req, res) => {
-            const theme = req.query.theme;
-            if (theme) {
-                legoData.getSetsByTheme(theme)
-                    .then(sets => res.json(sets))
-                    .catch(err => res.status(404).json({ error: err }));
-            } else {
-                legoData.getAllSets()
-                    .then(sets => res.json(sets))
-                    .catch(err => res.status(404).json({ error: err }));
-            }
+            legoData.getAllSets()
+              .then(sets => {
+              res.render("sets", {sets : sets});
+            })
+              .catch(err => res.status(500).send(err))
         });
 
         app.get("/lego/sets/:set_num", (req, res) => {
             legoData.getSetByNum(req.params.set_num)
-                .then(set => res.json(set))
-                .catch(err => res.status(404).json({ error: err }));
+                .then(set => {
+                    res.render("set", { set: set });
+                })
+                .catch(err => {
+                    res.status(404).send("Set not found");
+                });
         });
 
+        app.get("/lego/addSet", async (req, res) => {
+          try {
+              const themes = await legoData.getAllThemes();
+              res.render("addSet", { themes: themes });
+          } catch (err) {
+              console.error("Error fetching themes:", err);
+              res.status(500).send("Error fetching themes: " + err.message);
+          }
+      });
+      
+      
+
+      app.post("/lego/addSet", async (req, res) => {
+        console.log("⚡ Новый POST-запрос на /lego/addSet");
+    
+        try {
+            console.log("📦(req.body):", req.body);
+    
+            if (!req.body) {
+                console.error("❌ req.body is NULL or undefined!");
+            } 
+    
+            if (!req.body.theme_id) {
+                console.error("❌Error: theme_id missing в req.body!", req.body);
+                throw new Error("Missing theme_id in request body");
+            }
+    
+            let foundTheme = await legoData.getThemeById(req.body.theme_id);
+            req.body.theme = foundTheme.name;
+    
+            await legoData.addSet(req.body); 
+            res.redirect("/lego/sets");
+        } catch (err) {
+            console.error("❌ Server Error:", err);
+            res.status(500).send("Server error: " + (err.message || "Unknown error"));
+        }
+    });
+    
         app.use((req, res) => {
-            res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
+            res.status(404).render(path.join(__dirname, "views", "404.ejs"));
         });
+
 
         app.listen(HTTP_PORT, () => {
             console.log(`Server running on port ${HTTP_PORT}`);
@@ -64,33 +105,4 @@ legoData.initialize()
         console.error("Failed to initialize Lego data:", err);
     });
 
-    app.use(express.json());
-
-    app.get('/lego/add-test', (req, res) => {
-
-      let testSet = {
-        set_num: "123",
-        name: "testSet name",
-        year: "2024",
-        theme_id: "366",
-        num_parts: "123",
-        img_url: "https://fakeimg.pl/375x375?text=[+Lego+]"
-      };
-    
-
-      legoData.addSet(testSet)
-        .then(() => {
-          res.redirect('/lego/sets'); 
-        })
-        .catch((err) => {
-          res.status(422).send(err); 
-        });
-    });
-    
-    app.get('/lego/sets', (req, res) => {
-      res.json(legoData.sets);
-    });
-    
-    app.listen(8080, () => {
-      console.log('Server running on http://localhost:8080');
-    });
+app.use(express.json());
