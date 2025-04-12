@@ -36,11 +36,38 @@ sequelize.authenticate()
     });
 
     app.get("/lego/sets/:set_num", (req, res) => {
-      legoData.getSetByNum(req.params.set_num)
-        .then(set => res.render("set", { set }))
-        .catch(() => res.status(404).send("Set not found"));
-    });
+        const setNum = req.params.set_num;
+        console.log("Requested Set Number:", setNum);
+      
+        legoData.getSetByNum(setNum)
+          .then(set => {
+            if (!set) {
+              console.log(`No set found with set_num: ${setNum}`); 
+              return res.status(404).render("404", { message: "Set not found" });
+            }
+            console.log("Found Set:", set);
+            res.render("set", { set });
+          })
+          .catch(err => {
+            console.error("Error retrieving set:", err);
+            res.status(500).send("Server error: " + err.message);
+          });
+      });
+      
 
+      app.get("/lego/sets/search", (req, res) => {
+        const theme = req.query.theme;
+        console.log("Searching for theme:", theme);
+        legoData.getSetsByTheme(theme)
+          .then(sets => {
+            res.render("sets", { sets });
+          })
+          .catch(err => {
+            res.status(500).send("Error: " + err);
+          });
+      });
+      
+        
     app.get("/lego/addSet", async (req, res) => {
         try {
           const themes = await legoData.getAllThemes();

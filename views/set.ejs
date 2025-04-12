@@ -1,5 +1,5 @@
 <h1><%= set.name %> (Set: <%= set.set_num %>)</h1>
 <img src="<%= set.img_url %>" alt="<%= set.name %>" width="200">
-<p>Theme: <%= set.Theme.name %></p>
+<p>Theme: <%= set.Theme ? set.Theme.name : "Unknown" %></p>
 <p>Year: <%= set.year %></p>
 <p>Number of Parts: <%= set.num_parts %></p>

@@ -64,23 +64,26 @@ class LegoData {
 
     getSetByNum(setNum) {
         return this.Set.findOne({
-            where: { set_num: setNum },
-            include: this.Theme
+          where: { set_num: setNum },
+          include: this.Theme
         });
     }
-
+      
     getSetsByTheme(theme) {
         return this.Set.findAll({
-            include: {
-                model: this.Theme,
-                where: {
-                    name: {
-                        [Sequelize.Op.iLike]: `%${theme}%`
-                    }
-                }
+          include: {
+            model: this.Theme,
+            where: {
+              name: {
+                [Sequelize.Op.iLike]: `%${theme}%` 
+              }
             }
+          }
         });
-    }
+      }
+      
+      
+      
 
     getAllThemes() {
         return this.Theme.findAll();
