@@ -1,19 +1,25 @@
+<h1>LEGO Sets</h1>
 <table>
+  <thead>
     <tr>
       <th>Image</th>
       <th>Name</th>
       <th>Theme</th>
       <th>Year</th>
       <th>Parts</th>
+      <th>Actions</th>
     </tr>
+  </thead>
+  <tbody>
     <% sets.forEach(set => { %>
       <tr>
-        <td><div class="rounded" style="background-image: url('<%= set.img_url %>');"></div></td>
+        <td><img src="<%= set.img_url %>" alt="<%= set.name %>" width="100"></td>
         <td><%= set.name %></td>
-        <td><a href="/lego/sets?theme=<%= set.theme %>"><button><%= set.theme %></button></a></td>
+        <td><%= set.Theme.name %></td>
         <td><%= set.year %></td>
         <td><%= set.num_parts %></td>
+        <td><a href="/lego/sets/<%= set.set_num %>">View</a></td>
       </tr>
     <% }) %>
-  </table>
-  
+  </tbody>
+</table>

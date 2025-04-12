@@ -1,5 +1,5 @@
-<h1><%= set.name %></h1>
-<img src="<%= set.img_url %>" alt="<%= set.name %>">
-<p><%= set.description %></p>
-<a href="/lego/deleteSet/<%= set.set_num %>">Delete Set</a>
-<a href="#" onclick="history.back(); return false;">Back</a>
+<h1><%= set.name %> (Set: <%= set.set_num %>)</h1>
+<img src="<%= set.img_url %>" alt="<%= set.name %>" width="200">
+<p>Theme: <%= set.Theme.name %></p>
+<p>Year: <%= set.year %></p>
+<p>Number of Parts: <%= set.num_parts %></p>
