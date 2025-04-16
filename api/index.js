@@ -33,12 +33,14 @@ app.use(async (req, res, next) => {
 
 app.get("/", (req, res) => {
     try {
+      console.log("📍 GET / called");
       res.render("home");
     } catch (err) {
-      console.error("❌ Render error on home:", err);
-      res.status(500).send("Error rendering home");
+      console.error("❌ Error rendering home:", err);
+      res.status(500).send("Error rendering home page");
     }
   });
+  
   
 
 app.get("/about", (req, res) => {
