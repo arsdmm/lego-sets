@@ -31,10 +31,15 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// === ROUTES ===
 app.get("/", (req, res) => {
-  res.render("home");
-});
+    try {
+      res.render("home");
+    } catch (err) {
+      console.error("❌ Render error on home:", err);
+      res.status(500).send("Error rendering home");
+    }
+  });
+  
 
 app.get("/about", (req, res) => {
   res.render("about");
