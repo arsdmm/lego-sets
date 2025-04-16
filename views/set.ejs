@@ -1,5 +1,15 @@
-<h1><%= set.name %> (Set: <%= set.set_num %>)</h1>
-<img src="<%= set.img_url %>" alt="<%= set.name %>" width="200">
-<p>Theme: <%= set.Theme ? set.Theme.name : "Unknown" %></p>
-<p>Year: <%= set.year %></p>
-<p>Number of Parts: <%= set.num_parts %></p>
+<%- include("partials/navbar", { page: "" }) %>
+
+<section>
+  <h1><%= set.name %> (Set: <%= set.set_num %>)</h1>
+  <p>Below, you will find detailed information about the set:</p>
+  <img src="<%= set.img_url %>" alt="<%= set.name %>" width="300">
+  <ul>
+    <li><strong>Theme:</strong> <%= set.Theme ? set.Theme.name : "Unknown" %></li>
+    <li><strong>Year:</strong> <%= set.year %></li>
+    <li><strong>Number of Parts:</strong> <%= set.num_parts %></li>
+  </ul>
+
+  <a href="/lego/deleteSet/<%= set.set_num %>">🗑 Delete This Set</a><br>
+  <a href="#" onclick="history.back(); return false;">🔙 Back</a>
+</section>
